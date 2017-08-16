@@ -4,7 +4,7 @@ from pymongo import ASCENDING
 from flask_restful import Api, Resource
 import re
 
-from mongodb_rest_api import mongo
+from mongodb_rest_api import mongo, collections
 
 API_KEY = "super secret api key"
 
@@ -48,40 +48,34 @@ def invalid_category(category):
 
 
 class REST(Resource):
-	# list of resources here
-	def get(self, category=None, search=None):
+	def __init__(self):
+		self.collections = collections(self)
 
+	def get(self, category=None, search=None):
 		print(category,search)
+		print(self.collections)
 
 		if search:
 			print("searching: %s" % search)
-			
-			query = re.compile(request.args['name'], re.IGNORECASE)
-			
-			if search == 'movie':
-				return get_search(mongo.db.movie,{"name":query},[('name',ASCENDING)])
 
-			elif search == 'tv':
-				return get_search(mongo.db.tv,{"name": query},[('name',ASCENDING)])
-				
-			elif search == 'books':
-				return get_search(mongo.db.book,{"name": query},[('name',ASCENDING)])
-				
+			query = re.compile(request.args['name'], re.IGNORECASE)
+
+			if search in self.collections:
+				return get_search(
+					self.collections[search],
+					{'name':query},
+					[('name',ASCENDING)]
+				)
+
 			else:
 				return invalid_category(category)
 
 		elif category:
 			print("listing: %s" % category)
 
-			if category == 'movie':
-				return get_list(mongo.db.movie)
+			if category in self.collections:
+				return get_list(self.collections[category])
 
-			elif category == 'tv':
-				return get_list(mongo.db.tv)
-
-			elif category == 'books':
-				return get_list(mongo.db.book)
-				
 			else:
 				return invalid_category(category)
 		
@@ -97,14 +91,12 @@ class REST(Resource):
 				return {"response": "Invalid api key"}
 
 			else:
-				if category == 'movie':
-					return post(mongo.db.movie,'movie',data.get('movie'))
-
-				elif category == 'tv':
-					return post(mongo.db.tv,'tv',data.get('tv'))
-
-				elif category == 'book':
-					return post(mongo.db.book,'book',data.get('book'))
+				if category in self.collections:
+					return post(
+						self.collections[category],
+						category,
+						data.get(category)
+					)
 
 				else:
 					invalid_category(category)
@@ -120,14 +112,12 @@ class REST(Resource):
 				return {"response": "Invalid api key"}
 
 			else:
-				if category == 'movie':
-					return put(mongo.db.movie,'movie',data.get('movie'))
-
-				elif category == 'tv':
-					return put(mongo.db.tv,'tv',data.get('tv'))
-
-				elif category == 'book':
-					return put(mongo.db.book,'book',data.get('book'))
+				if category in self.collections:
+					return put(
+						self.collections[category],
+						category,
+						data.get(category)
+					)
 
 				else:
 					return invalid_category(category)
@@ -143,14 +133,12 @@ class REST(Resource):
 				return {"response": "Invalid api key"}
 
 			else:
-				if category == 'movie':
-					return delete(mongo.db.movie,'movie',data.get('movie'))
-
-				elif category == 'tv':
-					return delete(mongo.db.tv,'tv',data.get('tv'))
-
-				elif category == 'book':
-					return delete(mongo.db.book,'book',data.get('book'))
+				if category in self.collections:
+					return delete(
+						self.collections[category],
+						category,
+						data.get(category)
+					)
 
 				else:
 					return invalid_category(category)
