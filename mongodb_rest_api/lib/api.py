@@ -55,7 +55,7 @@ class REST(Resource):
 
 		if search:
 			print("searching: %s" % search)
-
+			
 			query = re.compile(request.args['name'], re.IGNORECASE)
 			
 			if search == 'movie':
@@ -154,8 +154,3 @@ class REST(Resource):
 
 				else:
 					return invalid_category(category)
-					
-
-class Index(Resource):
-	def get(self):
-		return redirect(url_for("api"))
