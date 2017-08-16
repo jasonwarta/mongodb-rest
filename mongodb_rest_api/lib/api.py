@@ -4,9 +4,7 @@ from pymongo import ASCENDING
 from flask_restful import Api, Resource
 import re
 
-from mongodb_rest_api import mongo, collections
-
-API_KEY = "super secret api key"
+from mongodb_rest_api import mongo, collections, API_KEY
 
 def get_search(db,query,sort):
 	data = []

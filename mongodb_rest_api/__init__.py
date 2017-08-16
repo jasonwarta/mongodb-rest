@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object('mongodb_rest_api.config')
 mongo = PyMongo(app, config_prefix='MONGO')
 APP_URL = "http://127.0.0.1:5000"
-
+API_KEY = "super secret api key"
 def collections(self):
 	with app.app_context():
 		# list of collections
