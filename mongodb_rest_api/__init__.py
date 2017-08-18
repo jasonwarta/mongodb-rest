@@ -6,10 +6,18 @@ app = Flask(__name__)
 app.config.from_object('mongodb_rest_api.config')
 mongo = PyMongo(app, config_prefix='MONGO')
 APP_URL = "http://127.0.0.1:5000"
+
+# this must be set
 API_KEY = "super secret api key"
+
 def collections(self):
 	with app.app_context():
-		# list of collections
+		# this must return a list of mongodb collections you wish to reference
+		# 
+		# for this example, to list items at
+		#	mongo.db.movie
+		# browse to
+		# 	localhost:5000/api/movie
 		return {'movie':mongo.db.movie,'tv': mongo.db.tv,'book': mongo.db.book}
 
 from mongodb_rest_api.lib import *
