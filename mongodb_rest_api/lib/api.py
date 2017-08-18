@@ -15,7 +15,7 @@ def get_search(db,query,sort):
 
 def get_list(db):
 	data = []
-	cursor = db.find({}).limit(10).sort([('name',ASCENDING)])
+	cursor = db.find({}).sort([('name',ASCENDING)])
 	for item in cursor:
 		data.append(item)
 	return jsonify({"response":data})
@@ -51,8 +51,6 @@ class REST(Resource):
 
 	def get(self, category=None, search=None):
 		if search:
-			print("searching: %s" % search)
-
 			query = re.compile(request.args['name'], re.IGNORECASE)
 
 			if search in self.collections:
@@ -66,8 +64,6 @@ class REST(Resource):
 				return invalid_category(category)
 
 		elif category:
-			print("listing: %s" % category)
-
 			if category in self.collections:
 				return get_list(self.collections[category])
 
