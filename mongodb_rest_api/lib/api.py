@@ -50,9 +50,6 @@ class REST(Resource):
 		self.collections = collections(self)
 
 	def get(self, category=None, search=None):
-		print(category,search)
-		print(self.collections)
-
 		if search:
 			print("searching: %s" % search)
 
